@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="ko" layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <style>
+        .change-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .change-header {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .change-amount {
+            font-size: 1.5rem;
+            color: #28a745;
+        }
+        .redirect-message {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #6c757d;
+        }
+    </style>
+    <script>
+        // 3초 후에 링크로 이동
+        setTimeout(function() {
+            window.location.href = "/start/main";
+        }, 3000);
+    </script>
+</head>
+<body layout:fragment="content">
+
+<div class="change-container">
+    <div class="change-header">거스름돈</div>
+    <div class="change-amount"><span th:text="${change}"></span> 원</div>
+    <div class="redirect-message">3초 후에 메인 화면으로 이동합니다...</div>
+</div>
+
+</body>
+</html>

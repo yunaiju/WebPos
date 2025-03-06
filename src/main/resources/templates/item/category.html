@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="ko" layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <style>
+        .category-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .category-header {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .category-info {
+            font-size: 1.2rem;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content">
+<div class="container my-3">
+    <div class="category-container">
+        <div class="category-header">카테고리 상세 정보</div>
+        <div class="category-info" th:text="${category.categoryName}"></div>
+
+        <div th:if="${category.categoryName != '기본'}" class="d-flex justify-content-between mt-4">
+            <a th:href="@{|/item/category/${category.id}/edit|}" class="btn btn-primary">수정</a>
+            <a th:href="'#'"
+               th:data-uri="@{|/item/category/${category.id}/delete|}"
+               class="delete btn btn-outline-danger">
+                삭제
+            </a>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+</script>
+</body>
+</html>

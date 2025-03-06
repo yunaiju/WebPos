@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="ko" layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+
+<nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"><img th:src="@{/webpos.png}" width="250"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!--<li class="nav-item"><a class="nav-link" th:href="@{/item}">메뉴관리</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/start/main}">영업시작</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/close}">마감정산</a></li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

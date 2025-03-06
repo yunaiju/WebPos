@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container-fluid {
+            height: 100vh;  /* 화면 전체 높이 사용 */
+            width: 100%;   /* 화면 전체 넓이 사용 */
+        }
+
+        /* 네비게이션 바 */
+        nav {
+            background-color: #343a40;
+        }
+        nav .navbar-brand img {
+            width: 220px;
+        }
+        nav .navbar-nav .nav-link {
+            color: #ffffff !important;
+        }
+        nav .navbar-nav .nav-link:hover {
+            color: #ffc107 !important;
+        }
+
+        /* 왼쪽 화면 */
+        .left-panel {
+            background-color: #ffffff;
+            border-right: 1px solid #ccc;
+            padding: 15px;
+        }
+
+        .left-top {
+            height: 40%;
+        }
+        .left-bottom {
+            height: 60%;
+            overflow-y: auto;
+        }
+
+        .left-top-table, .left-bottom-table {
+            display: grid;
+            grid-gap: 10px;
+            padding: 10px;
+        }
+
+        .left-top-table button, .left-bottom-table button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .left-top-table button:hover, .left-bottom-table button:hover {
+            background-color: #0056b3;
+        }
+
+        .left-bottom-table button {
+            background-color: #f0f0f0;
+            color: #333;
+            border-radius: 3px;
+        }
+
+        /* 오른쪽 화면 */
+        .right-panel {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .right-top {
+            height: 75%;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .right-bottom {
+            height: 25%;
+        }
+
+        .right-top-table {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .right-top-table div {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .right-top-table div span {
+            font-weight: bold;
+        }
+
+        .right-bottom-table {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .right-bottom-table button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .right-bottom-table button:hover {
+            background-color: #218838;
+        }
+
+        .right-bottom-table button:active {
+            background-color: #1e7e34;
+        }
+
+        /* 반응형 처리 */
+        @media (max-width: 768px) {
+            .left-panel, .right-panel {
+                padding: 10px;
+            }
+
+            .left-top-table, .left-bottom-table {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .right-top-table {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <!-- 네비게이션 바 -->
+    <nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <a class="navbar-brand" href="/"><img th:src="@{/webpos.png}" width="250"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/item}">메뉴관리</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/start/main}">영업시작</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/close}">마감정산</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 컨텐츠 영역 -->
+    <div class="row h-100">
+        <!-- 왼쪽 화면 -->
+        <div class="col-md-6 left-panel">
+            <div class="left-top">
+                <div class="left-top-table">
+                    <button th:each="category : ${categories}" th:text="${category.categoryName}" th:data-id="${category.id}" onclick="loadProducts(this)"></button>
+                </div>
+            </div>
+            <div class="left-bottom">
+                <div class="left-bottom-table" id="product-list">
+                    <button>카테고리를 선택해주세요</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 화면 -->
+        <div class="col-md-6 right-panel">
+            <div class="right-top">
+                <div class="right-top-table">
+                    <div id="order-list">상품 수량 총금액</div>
+                    <div id="total-summary">
+                        <div>최종수량 : <span id="total-quantity">0</span></div>
+                        <div>최종금액 : <span id="total-price">0</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-bottom">
+                <div class="right-bottom-table">
+                    <button onclick="payCash()">현금</button>
+                    <button onclick="payCard()">카드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 기존 스크립트는 그대로 사용
+    const cart = {};
+
+    function loadProducts(button) {
+        const categoryId = button.getAttribute('data-id');
+        console.log(categoryId);
+
+        fetch('/api/categories/' + categoryId + '/products')
+            .then(response => response.json())
+            .then(products => {
+                console.log(products);
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = '';
+
+                products.forEach(product => {
+                    const button = document.createElement('button');
+                    button.innerHTML = `${product.productName}<br>${product.price}원`;
+                    button.setAttribute('onclick', `addProduct(${product.id})`);
+                    productList.appendChild(button);
+                });
+            });
+    }
+
+    function addProduct(productId) {
+        fetch('/api/products/' + productId)
+            .then(response => response.json())
+            .then(product => {
+                if (cart[productId]) {
+                    cart[productId].quantity++;
+                } else {
+                    cart[productId] = {
+                        name: product.productName,
+                        price: product.price,
+                        quantity: 1
+                    };
+                }
+                renderOrderList();
+            });
+    }
+
+    function renderOrderList() {
+        const orderList = document.getElementById('order-list');
+        orderList.innerHTML = '<div>상품 수량 총금액</div>';
+
+        let totalQuantity = 0;
+        let totalPrice = 0;
+
+        Object.values(cart).forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.innerHTML = `${item.name} - ${item.quantity}개 - ${item.price * item.quantity}원`;
+            orderList.appendChild(itemDiv);
+
+            totalQuantity += item.quantity;
+            totalPrice += item.price * item.quantity;
+        });
+
+        document.getElementById('total-quantity').innerText = totalQuantity;
+        document.getElementById('total-price').innerText = totalPrice;
+
+        fetch('/api/saveTotal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ totalPrice: totalPrice, totalQuantity: totalQuantity })
+        });
+    }
+
+    function payCash() {
+        const totalPrice = document.getElementById('total-price').innerText;
+
+        fetch('/api/payCash', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ totalPrice: totalPrice })
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = `/start/payCash?totalPrice=${totalPrice}`;
+        });
+    }
+
+    function payCard() {
+        const totalPrice = document.getElementById('total-price').innerText;
+
+        fetch('/api/payCard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ totalPrice: totalPrice })
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = `/start/payCard?totalPrice=${totalPrice}`;
+        });
+    }
+</script>
+
+</body>
+</html>

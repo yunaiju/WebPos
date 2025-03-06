@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="ko" layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 100px;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 50px;
+            padding: 15px;
+        }
+
+        .btn-primary {
+            background-color: #CC66FF;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #CC66FF;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+            color: #333;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 30px;
+            color: #333;
+        }
+        h3 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 25px;
+            color: #333;
+        }
+    </style>
+</head>
+<body layout:fragment="content">
+<div class="container">
+    <h1>마감정산</h1>
+    <br>
+    <hr>
+    <br>
+    <h1>총매출</h1>
+    <br>
+    <br>
+    <h3>현금 <span th:if="${cashTotal!=null}" th:text="${cashTotal}">0</span>원</h3>
+    <br>
+    <h3>카드 <span th:if="${cardTotal!=null}" th:text="${cardTotal}">0</span>원</h3>
+    <br>
+    <h2>총매출액 <span th:if="${totalAmount!=null}" th:text="${totalAmount}">0</span>원</h2>
+    <br>
+    <a th:href="@{/close/reset}" class="btn btn-primary">영업종료 (종료 시 모든 데이터가 사라집니다 !)</a>
+</div>
+</body>
+</html>

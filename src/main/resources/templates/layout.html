@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+<!-- bootstrap -->
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+
+<!-- navbar -->
+<nav th:replace="~{navbar::navbarFragment}"></nav>
+<th:block layout:fragment="content"></th:block>
+
+<!-- javascript -->
+<script th:src="@{/bootstrap.min.js}"></script>
+<th:block layout:fragment="script"></th:block>
+
+</body>
+</html>
