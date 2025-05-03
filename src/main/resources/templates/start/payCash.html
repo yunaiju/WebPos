@@ -30,7 +30,7 @@
     </style>
 </head>
 <body layout:fragment="content">
-
+<a th:href="@{/start/main}" class="btn btn-outline-secondary" style="width: 3.5%;">←</a>
 <div class="payment-container">
     <div class="payment-header">결제 금액</div>
     <div class="payment-amount"><span th:text="${totalPrice}"></span> 원</div>
@@ -38,7 +38,7 @@
     <form th:action="@{/start/save/cash}" method="post">
         <div class="mb-3">
             <label class="form-label">받은 금액 :</label>
-            <input type="text" name="receivedAmount" class="form-control" required>
+            <input type="text" name="receivedAmount" class="form-control">
         </div>
         <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
         <input type="submit" value="결제 완료" class="btn btn-success my-2">

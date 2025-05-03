@@ -4,6 +4,9 @@ import com.pos.webPos.category.Category;
 import com.pos.webPos.category.CategoryService;
 import com.pos.webPos.payment.Payment;
 import com.pos.webPos.payment.PaymentService;
+import com.pos.webPos.session.PosSession;
+import com.pos.webPos.session.PosSessionService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 @RequiredArgsConstructor
 @Controller
@@ -21,10 +25,14 @@ public class StartController {
 
     private final CategoryService categoryService;
     private final PaymentService paymentService;
+    private final PosSessionService posSessionService;
 
     @GetMapping("/main")
-    public String main(Model model) {
-        List<Category> categories = this.categoryService.getList();
+    public String main(Model model, HttpSession session) {
+        String sessionId = session.getId();
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+
+        List<Category> categories = this.categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories",categories);
 
         return "start/main";
@@ -46,23 +54,31 @@ public class StartController {
 
     @PostMapping("/save/cash")
     public String saveCash(@RequestParam("totalPrice") Integer totalPrice,
-                           @RequestParam("receivedAmount")Integer receivedAmount,
-                           Model model) {
-        Integer change = receivedAmount - totalPrice;
+                           @RequestParam(value = "receivedAmount", required = false)Integer receivedAmount,
+                           Model model, HttpSession session) {
 
-        Payment payment = new Payment("현금",totalPrice);
+        String sessionId = session.getId();
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        Payment payment = new Payment("현금",totalPrice,posSession );
         this.paymentService.save(payment);
 
-        model.addAttribute("change",change);
+        if(receivedAmount == null) {
+            return "redirect:/start/main";
+        } else {
+            Integer change = receivedAmount - totalPrice;
+            model.addAttribute("change",change);
 
-        return "start/changePopup";
+            return "start/changePopup";
+        }
     }
 
     @PostMapping("/save/card")
-    public String saveCard(@RequestParam("totalPrice")Integer totalPrice) {
-    Payment payment = new Payment("카드",totalPrice);
-    this.paymentService.save(payment);
+    public String saveCard(@RequestParam("totalPrice")Integer totalPrice, HttpSession session) {
+        String sessionId = session.getId();
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        Payment payment = new Payment("카드",totalPrice,posSession);
+        this.paymentService.save(payment);
 
-    return "redirect:/start/main";
+        return "redirect:/start/main";
     }
 }

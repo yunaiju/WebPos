@@ -29,6 +29,7 @@
 
 <body layout:fragment="content">
 <div class="container my-3">
+    <a th:href="@{/item/categories}" class="btn btn-outline-secondary" style="width: 3.5%;">←</a>
     <div class="category-container">
         <div class="category-header">카테고리 상세 정보</div>
         <div class="category-info" th:text="${category.categoryName}"></div>

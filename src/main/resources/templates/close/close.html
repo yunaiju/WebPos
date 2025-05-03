@@ -53,6 +53,7 @@
 </head>
 <body layout:fragment="content">
 <div class="container">
+    <a th:href="@{/close/payments}" class="btn btn-outline-secondary" style="width: 3.5%;">←</a>
     <h1>마감정산</h1>
     <br>
     <hr>
@@ -66,7 +67,21 @@
     <br>
     <h2>총매출액 <span th:if="${totalAmount!=null}" th:text="${totalAmount}">0</span>원</h2>
     <br>
-    <a th:href="@{/close/reset}" class="btn btn-primary">영업종료 (종료 시 모든 데이터가 사라집니다 !)</a>
+    <a th:href="'#'"
+       th:data-uri="@{/close/reset}"
+       class="delete btn btn-outline-danger">
+        영업종료 (※ 종료 시 모든 데이터가 사라집니다.)
+    </a>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if (confirm("영업을 종료합니다?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+</script>
 </body>
 </html>

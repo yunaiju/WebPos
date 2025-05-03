@@ -2,6 +2,7 @@ package com.pos.webPos.category;
 
 import com.pos.webPos.DataNotFoundException;
 import com.pos.webPos.product.Product;
+import com.pos.webPos.session.PosSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> getList() {
-        return this.categoryRepository.findAll();
+    public List<Category> getSessionCategoryList(PosSession posSession) {
+        return this.categoryRepository.findAllByPosSession(posSession);
     }
 
     public Category getCategory(Integer id) {
@@ -29,21 +30,29 @@ public class CategoryService {
         }
     }
 
-    public void addCategory(String categoryName) {
-        Category category = new Category(categoryName);
+    public Category getDefaultCategoryBySession(PosSession posSession) {
+        return this.categoryRepository.findByCategoryNameAndPosSession("기본", posSession);
+    }
+
+    public void addCategory(String categoryName, PosSession posSession) {
+        if(this.categoryRepository.existsByPosSessionAndCategoryName(posSession, categoryName)) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리입니다.");
+        }
+        Category category = new Category(categoryName, posSession);
         this.categoryRepository.save(category);
     }
 
-    public void editCategory(Category category, String categoryName) {
+    public void editCategory(Category category, String categoryName, PosSession posSession) {
+        if(!category.getCategoryName().equals(categoryName)) {
+            if(this.categoryRepository.existsByPosSessionAndCategoryName(posSession, categoryName)) {
+                throw new IllegalArgumentException("이미 존재하는 카테고리입니다.");
+            }
+        }
         category.update(categoryName);
         this.categoryRepository.save(category);
     }
 
     public void delete(Category category) {
         this.categoryRepository.delete(category);
-    }
-
-    public void resetCategory() {
-        this.categoryRepository.deleteAllCategories();
     }
 }
