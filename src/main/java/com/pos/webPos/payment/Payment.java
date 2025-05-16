@@ -19,7 +19,7 @@ public class Payment {
 
     private Integer totalPrice;
 
-    private LocalDateTime paymentTime=LocalDateTime.now();
+    private LocalDateTime paymentTime = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private PosSession posSession;

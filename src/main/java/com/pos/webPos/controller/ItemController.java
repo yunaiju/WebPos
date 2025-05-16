@@ -32,14 +32,16 @@ public class ItemController {
     private final PosSessionService posSessionService;
 
     @GetMapping("")
-    public String main() {
+    public String main(HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
         return "item/main";
     }
 
     @GetMapping("/products")
     public String products(HttpSession session, Model model) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Product> products = this.productService.getSessionProductList(posSession);
         model.addAttribute("products",products);
@@ -48,7 +50,10 @@ public class ItemController {
     }
 
     @GetMapping("/product/{id}")
-    public String product(Model model, @PathVariable("id") Integer id) {
+    public String product(Model model, @PathVariable("id") Integer id, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         Product product = this.productService.getProduct(id);
         model.addAttribute("product",product);
 
@@ -58,7 +63,7 @@ public class ItemController {
     @GetMapping("/addProduct")
     public String addProduct(ProductForm productForm,Model model,HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -73,7 +78,7 @@ public class ItemController {
     @PostMapping("/addProduct")
     public String addProduct(@Valid ProductForm productForm, BindingResult bindingResult, Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -99,7 +104,7 @@ public class ItemController {
     @GetMapping("/product/{id}/edit")
     public String editProduct(ProductForm productForm, @PathVariable("id")Integer id,Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -119,7 +124,7 @@ public class ItemController {
     public String editProduct(@PathVariable("id")Integer id,@Valid ProductForm productForm, BindingResult bindingResult,
                        Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -143,7 +148,10 @@ public class ItemController {
     }
 
     @GetMapping("/product/{id}/delete")
-    public String deleteProduct(@PathVariable("id")Integer id) {
+    public String deleteProduct(@PathVariable("id")Integer id, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         Product product = this.productService.getProduct(id);
         this.productService.delete(product);
 
@@ -153,7 +161,7 @@ public class ItemController {
     @GetMapping("/categories")
     public String categories(Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Category> categories = this.categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories",categories);
@@ -162,7 +170,10 @@ public class ItemController {
     }
 
     @GetMapping("/category/{id}")
-    public String category(Model model, @PathVariable("id") Integer id) {
+    public String category(Model model, @PathVariable("id") Integer id, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         Category category = this.categoryService.getCategory(id);
         model.addAttribute("category", category);
 
@@ -170,14 +181,17 @@ public class ItemController {
     }
 
     @GetMapping("/addCategory")
-    public String addCategory(CategoryForm categoryForm) {
+    public String addCategory(CategoryForm categoryForm, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         return "item/addCategory";
     }
 
     @PostMapping("/addCategory")
     public String addCategory(@Valid CategoryForm categoryForm,BindingResult bindingResult, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         if(bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
@@ -195,7 +209,10 @@ public class ItemController {
     }
 
     @GetMapping("/category/{id}/edit")
-    public String editCategory(CategoryForm categoryForm, @PathVariable("id")Integer id) {
+    public String editCategory(CategoryForm categoryForm, @PathVariable("id")Integer id, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         Category category = this.categoryService.getCategory(id);
         categoryForm.setCategoryName(category.getCategoryName());
 
@@ -210,7 +227,7 @@ public class ItemController {
         }
         Category category = this.categoryService.getCategory(id);
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         try {
             this.categoryService.editCategory(category,categoryForm.getCategoryName(), posSession);
@@ -223,7 +240,10 @@ public class ItemController {
     }
 
     @GetMapping("/category/{id}/delete")
-    public String deleteCategory(@PathVariable("id") Integer id) {
+    public String deleteCategory(@PathVariable("id") Integer id, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         Category category = this.categoryService.getCategory(id);
         this.categoryService.delete(category);
 

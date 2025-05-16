@@ -241,29 +241,48 @@
     }
 
     function renderOrderList() {
-        const orderList = document.getElementById('order-list');
-        orderList.innerHTML = '<div>상품 수량 총금액</div>';
+    const orderList = document.getElementById('order-list');
+    orderList.innerHTML = '<div>상품 수량 총금액</div>';
 
-        let totalQuantity = 0;
-        let totalPrice = 0;
+    let totalQuantity = 0;
+    let totalPrice = 0;
 
-        Object.values(cart).forEach(item => {
-            const itemDiv = document.createElement('div');
-            itemDiv.innerHTML = `${item.name} - ${item.quantity}개 - ${item.price * item.quantity}원`;
-            orderList.appendChild(itemDiv);
+    Object.entries(cart).forEach(([productId, item]) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.innerHTML = `
+            ${item.name} -
+            <button onclick="decreaseQuantity(${productId})">-</button>
+            ${item.quantity}
+            <button onclick="increaseQuantity(${productId})">+</button>
+            개 - ${item.price * item.quantity}원
+        `;
+        orderList.appendChild(itemDiv);
 
-            totalQuantity += item.quantity;
-            totalPrice += item.price * item.quantity;
-        });
+        totalQuantity += item.quantity;
+        totalPrice += item.price * item.quantity;
+    });
 
-        document.getElementById('total-quantity').innerText = totalQuantity;
-        document.getElementById('total-price').innerText = totalPrice;
+    document.getElementById('total-quantity').innerText = totalQuantity;
+    document.getElementById('total-price').innerText = totalPrice;
 
-        fetch('/api/saveTotal', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ totalPrice: totalPrice, totalQuantity: totalQuantity })
-        });
+    fetch('/api/saveTotal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ totalPrice: totalPrice, totalQuantity: totalQuantity })
+    });
+}
+
+    function increaseQuantity(productId) {
+        cart[productId].quantity++;
+        renderOrderList();
+    }
+
+    function decreaseQuantity(productId) {
+        cart[productId].quantity--;
+        if (cart[productId].quantity <= 0) {
+            delete cart[productId];
+        }
+        renderOrderList();
     }
 
     function payCash() {

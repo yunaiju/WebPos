@@ -15,8 +15,6 @@ public interface ProductRepository extends JpaRepository<Product,Integer> {
 
     List<Product> findAllByPosSession(PosSession posSession);
 
-    List<Product> findByCategoryId(Integer categoryId);
-
     List<Product> findByCategoryIdAndPosSession(Integer categoryId, PosSession posSession);
 
     @Modifying

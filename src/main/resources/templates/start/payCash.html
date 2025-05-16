@@ -30,6 +30,7 @@
     </style>
 </head>
 <body layout:fragment="content">
+<div class="container my-3">
 <a th:href="@{/start/main}" class="btn btn-outline-secondary" style="width: 3.5%;">←</a>
 <div class="payment-container">
     <div class="payment-header">결제 금액</div>
@@ -49,6 +50,6 @@
         거스름돈 : <span th:text="${change}"></span> 원
     </div>
 </div>
-
+</div>
 </body>
 </html>

@@ -32,7 +32,7 @@ public class CloseController {
     @GetMapping("/payments")
     public String payments(Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Payment> payments = this.paymentService.getPaymentList(posSession);
         model.addAttribute("payments", payments);
@@ -43,7 +43,10 @@ public class CloseController {
     }
 
     @GetMapping("/payments/{id}/delete")
-    public String deletePayment(@PathVariable("id")Long id) {
+    public String deletePayment(@PathVariable("id")Long id, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         Payment payment = this.paymentService.getPayment(id);
         this.paymentService.deletePayment(payment);
 
@@ -53,7 +56,7 @@ public class CloseController {
     @GetMapping("/finish")
     public String close(Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         Integer cashTotal = this.paymentService.getTotalCashPayments(posSession);
         if(cashTotal==null) cashTotal=0;
@@ -72,7 +75,7 @@ public class CloseController {
     @GetMapping("/reset")
     public String reset(HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
         this.posSessionService.deletePosSessionWithChildren(posSession);
 
         return "redirect:/";

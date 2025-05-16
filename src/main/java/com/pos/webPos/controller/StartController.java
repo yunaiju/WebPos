@@ -30,7 +30,7 @@ public class StartController {
     @GetMapping("/main")
     public String main(Model model, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
 
         List<Category> categories = this.categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories",categories);
@@ -39,14 +39,20 @@ public class StartController {
     }
 
     @GetMapping("/payCash")
-    public String payCash(@RequestParam("totalPrice") Integer totalPrice, Model model) {
+    public String payCash(@RequestParam("totalPrice") Integer totalPrice, Model model, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         model.addAttribute("totalPrice", totalPrice);
 
         return "start/payCash";
     }
 
     @GetMapping("/payCard")
-    public String payCard(@RequestParam("totalPrice") Integer totalPrice, Model model) {
+    public String payCard(@RequestParam("totalPrice") Integer totalPrice, Model model, HttpSession session) {
+        String sessionId = session.getId();
+        this.posSessionService.getOrCreatePosSession(sessionId);
+
         model.addAttribute("totalPrice", totalPrice);
 
         return "start/payCard"; // 결제 확인 페이지
@@ -58,7 +64,7 @@ public class StartController {
                            Model model, HttpSession session) {
 
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
         Payment payment = new Payment("현금",totalPrice,posSession );
         this.paymentService.save(payment);
 
@@ -75,7 +81,7 @@ public class StartController {
     @PostMapping("/save/card")
     public String saveCard(@RequestParam("totalPrice")Integer totalPrice, HttpSession session) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
+        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
         Payment payment = new Payment("카드",totalPrice,posSession);
         this.paymentService.save(payment);
 
