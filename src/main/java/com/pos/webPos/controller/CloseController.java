@@ -1,13 +1,11 @@
 package com.pos.webPos.controller;
 
-import com.pos.webPos.category.CategoryService;
 import com.pos.webPos.payment.Payment;
 import com.pos.webPos.payment.PaymentService;
-import com.pos.webPos.product.Product;
-import com.pos.webPos.product.ProductService;
 import com.pos.webPos.session.PosSession;
 import com.pos.webPos.session.PosSessionService;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +28,15 @@ public class CloseController {
     private final PosSessionService posSessionService;
 
     @GetMapping("/payments")
-    public String payments(Model model, HttpSession session) {
+    public String payments(Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Payment> payments = this.paymentService.getPaymentList(posSession);
         model.addAttribute("payments", payments);
@@ -43,9 +47,14 @@ public class CloseController {
     }
 
     @GetMapping("/payments/{id}/delete")
-    public String deletePayment(@PathVariable("id")Long id, HttpSession session) {
+    public String deletePayment(@PathVariable("id")Long id, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         Payment payment = this.paymentService.getPayment(id);
         this.paymentService.deletePayment(payment);
@@ -54,9 +63,15 @@ public class CloseController {
     }
 
     @GetMapping("/finish")
-    public String close(Model model, HttpSession session) {
+    public String close(Model model, HttpSession session,HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         Integer cashTotal = this.paymentService.getTotalCashPayments(posSession);
         if(cashTotal==null) cashTotal=0;
@@ -73,9 +88,15 @@ public class CloseController {
     }
 
     @GetMapping("/reset")
-    public String reset(HttpSession session) {
+    public String reset(HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
         this.posSessionService.deletePosSessionWithChildren(posSession);
 
         return "redirect:/";

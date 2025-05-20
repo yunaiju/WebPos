@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,17 +25,24 @@ public class PosSessionService {
                 .orElseThrow(() -> new DataNotFoundException("PosSession Not Found"));
     }
 
-    public PosSession getOrCreatePosSession(String sessionId) {
-        return this.posSessionRepository.findBySessionId(sessionId)
-                .orElseGet(()-> {
-                    PosSession newSession = new PosSession(sessionId, LocalDate.now());
-                    this.posSessionRepository.save(newSession);
+    public boolean existOrCreatePosSession(String sessionId) {
+        Optional<PosSession> posSession = this.posSessionRepository.findBySessionId(sessionId);
 
-                    Category defaultCategory = new Category("기본", newSession);
-                    categoryRepository.save(defaultCategory);
+        if(posSession.isPresent()) {
+            return false;
+        }
 
-                    return newSession;
-                });
+        PosSession newSession = new PosSession(sessionId, LocalDateTime.now());
+        this.posSessionRepository.save(newSession);
+
+        Category defaultCategory = new Category("기본", newSession);
+        categoryRepository.save(defaultCategory);
+
+        return true;
+    }
+
+    public boolean isNewSession(String sessionId) {
+        return this.posSessionRepository.findBySessionId(sessionId).isEmpty();
     }
 
     @Transactional

@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpSessionListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Component
 public class SessionCleanupListener implements HttpSessionListener {
@@ -20,7 +22,7 @@ public class SessionCleanupListener implements HttpSessionListener {
         PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         if (posSession!=null) {
-            System.out.println("posSessionId : "+posSession.getId());
+            System.out.println(sessionId+" "+ LocalDateTime.now());
             this.posSessionService.deletePosSessionWithChildren(posSession);
             System.out.println("data deleted");
         }

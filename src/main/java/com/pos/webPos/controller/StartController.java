@@ -6,6 +6,8 @@ import com.pos.webPos.payment.Payment;
 import com.pos.webPos.payment.PaymentService;
 import com.pos.webPos.session.PosSession;
 import com.pos.webPos.session.PosSessionService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -28,9 +30,15 @@ public class StartController {
     private final PosSessionService posSessionService;
 
     @GetMapping("/main")
-    public String main(Model model, HttpSession session) {
+    public String main(Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Category> categories = this.categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories",categories);
@@ -39,9 +47,14 @@ public class StartController {
     }
 
     @GetMapping("/payCash")
-    public String payCash(@RequestParam("totalPrice") Integer totalPrice, Model model, HttpSession session) {
+    public String payCash(@RequestParam("totalPrice") Integer totalPrice, Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         model.addAttribute("totalPrice", totalPrice);
 
@@ -49,9 +62,14 @@ public class StartController {
     }
 
     @GetMapping("/payCard")
-    public String payCard(@RequestParam("totalPrice") Integer totalPrice, Model model, HttpSession session) {
+    public String payCard(@RequestParam("totalPrice") Integer totalPrice, Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         model.addAttribute("totalPrice", totalPrice);
 
@@ -61,10 +79,16 @@ public class StartController {
     @PostMapping("/save/cash")
     public String saveCash(@RequestParam("totalPrice") Integer totalPrice,
                            @RequestParam(value = "receivedAmount", required = false)Integer receivedAmount,
-                           Model model, HttpSession session) {
+                           Model model, HttpSession session, HttpServletResponse response) {
 
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
         Payment payment = new Payment("현금",totalPrice,posSession );
         this.paymentService.save(payment);
 
@@ -79,9 +103,15 @@ public class StartController {
     }
 
     @PostMapping("/save/card")
-    public String saveCard(@RequestParam("totalPrice")Integer totalPrice, HttpSession session) {
+    public String saveCard(@RequestParam("totalPrice")Integer totalPrice, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
         Payment payment = new Payment("카드",totalPrice,posSession);
         this.paymentService.save(payment);
 

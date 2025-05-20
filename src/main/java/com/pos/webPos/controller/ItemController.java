@@ -8,6 +8,8 @@ import com.pos.webPos.product.ProductForm;
 import com.pos.webPos.product.ProductService;
 import com.pos.webPos.session.PosSession;
 import com.pos.webPos.session.PosSessionService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +34,27 @@ public class ItemController {
     private final PosSessionService posSessionService;
 
     @GetMapping("")
-    public String main(HttpSession session) {
+    public String main(HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
         return "item/main";
     }
 
     @GetMapping("/products")
-    public String products(HttpSession session, Model model) {
+    public String products(HttpSession session, Model model, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Product> products = this.productService.getSessionProductList(posSession);
         model.addAttribute("products",products);
@@ -50,9 +63,14 @@ public class ItemController {
     }
 
     @GetMapping("/product/{id}")
-    public String product(Model model, @PathVariable("id") Integer id, HttpSession session) {
+    public String product(Model model, @PathVariable("id") Integer id, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         Product product = this.productService.getProduct(id);
         model.addAttribute("product",product);
@@ -61,9 +79,15 @@ public class ItemController {
     }
 
     @GetMapping("/addProduct")
-    public String addProduct(ProductForm productForm,Model model,HttpSession session) {
+    public String addProduct(ProductForm productForm,Model model,HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -76,9 +100,15 @@ public class ItemController {
     }
 
     @PostMapping("/addProduct")
-    public String addProduct(@Valid ProductForm productForm, BindingResult bindingResult, Model model, HttpSession session) {
+    public String addProduct(@Valid ProductForm productForm, BindingResult bindingResult, Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -102,9 +132,15 @@ public class ItemController {
     }
 
     @GetMapping("/product/{id}/edit")
-    public String editProduct(ProductForm productForm, @PathVariable("id")Integer id,Model model, HttpSession session) {
+    public String editProduct(ProductForm productForm, @PathVariable("id")Integer id,Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -122,9 +158,15 @@ public class ItemController {
 
     @PostMapping("/product/{id}/edit")
     public String editProduct(@PathVariable("id")Integer id,@Valid ProductForm productForm, BindingResult bindingResult,
-                       Model model, HttpSession session) {
+                       Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Category> categories = categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories", categories);
@@ -148,9 +190,14 @@ public class ItemController {
     }
 
     @GetMapping("/product/{id}/delete")
-    public String deleteProduct(@PathVariable("id")Integer id, HttpSession session) {
+    public String deleteProduct(@PathVariable("id")Integer id, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         Product product = this.productService.getProduct(id);
         this.productService.delete(product);
@@ -159,9 +206,15 @@ public class ItemController {
     }
 
     @GetMapping("/categories")
-    public String categories(Model model, HttpSession session) {
+    public String categories(Model model, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         List<Category> categories = this.categoryService.getSessionCategoryList(posSession);
         model.addAttribute("categories",categories);
@@ -170,9 +223,14 @@ public class ItemController {
     }
 
     @GetMapping("/category/{id}")
-    public String category(Model model, @PathVariable("id") Integer id, HttpSession session) {
+    public String category(Model model, @PathVariable("id") Integer id, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         Category category = this.categoryService.getCategory(id);
         model.addAttribute("category", category);
@@ -181,17 +239,28 @@ public class ItemController {
     }
 
     @GetMapping("/addCategory")
-    public String addCategory(CategoryForm categoryForm, HttpSession session) {
+    public String addCategory(CategoryForm categoryForm, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         return "item/addCategory";
     }
 
     @PostMapping("/addCategory")
-    public String addCategory(@Valid CategoryForm categoryForm,BindingResult bindingResult, HttpSession session) {
+    public String addCategory(@Valid CategoryForm categoryForm,BindingResult bindingResult, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         if(bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
@@ -209,9 +278,14 @@ public class ItemController {
     }
 
     @GetMapping("/category/{id}/edit")
-    public String editCategory(CategoryForm categoryForm, @PathVariable("id")Integer id, HttpSession session) {
+    public String editCategory(CategoryForm categoryForm, @PathVariable("id")Integer id, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         Category category = this.categoryService.getCategory(id);
         categoryForm.setCategoryName(category.getCategoryName());
@@ -221,13 +295,19 @@ public class ItemController {
 
     @PostMapping("/category/{id}/edit")
     public String editCategory(@Valid CategoryForm categoryForm,BindingResult bindingResult, @PathVariable("id")Integer id,
-                               HttpSession session) {
+                               HttpSession session, HttpServletResponse response) {
         if(bindingResult.hasErrors()) {
             return "item/addCategory";
         }
         Category category = this.categoryService.getCategory(id);
         String sessionId = session.getId();
-        PosSession posSession = this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
+        PosSession posSession = this.posSessionService.getPosSessionOrElse(sessionId);
 
         try {
             this.categoryService.editCategory(category,categoryForm.getCategoryName(), posSession);
@@ -240,9 +320,14 @@ public class ItemController {
     }
 
     @GetMapping("/category/{id}/delete")
-    public String deleteCategory(@PathVariable("id") Integer id, HttpSession session) {
+    public String deleteCategory(@PathVariable("id") Integer id, HttpSession session, HttpServletResponse response) {
         String sessionId = session.getId();
-        this.posSessionService.getOrCreatePosSession(sessionId);
+        if(this.posSessionService.existOrCreatePosSession(sessionId)) {
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 12); // 12시간
+            response.addCookie(cookie);
+        }
 
         Category category = this.categoryService.getCategory(id);
         this.categoryService.delete(category);

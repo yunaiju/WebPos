@@ -6,8 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Entity @Getter
@@ -18,9 +17,9 @@ public class PosSession {
 
     private String sessionId;
 
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    public PosSession(String sessionId, LocalDate createdAt) {
+    public PosSession(String sessionId, LocalDateTime createdAt) {
         this.sessionId = sessionId;
         this.createdAt = createdAt;
     }
