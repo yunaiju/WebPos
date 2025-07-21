@@ -22,7 +22,7 @@ public class Category {
     @Column(unique = true,nullable = false)
     private String categoryName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private PosSession posSession;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)

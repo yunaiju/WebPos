@@ -6,6 +6,7 @@ import com.pos.webPos.session.PosSession;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.codehaus.groovy.reflection.stdclasses.CachedSAMClass;
 
 @NoArgsConstructor
 @Getter
@@ -25,7 +26,7 @@ public class Product {
 
     private Integer price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonIgnore
     private PosSession posSession;
 

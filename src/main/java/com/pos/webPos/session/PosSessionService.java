@@ -41,15 +41,11 @@ public class PosSessionService {
         return true;
     }
 
-    public boolean isNewSession(String sessionId) {
-        return this.posSessionRepository.findBySessionId(sessionId).isEmpty();
-    }
-
     @Transactional
     public void deletePosSessionWithChildren(PosSession posSession) {
         this.productRepository.deleteByPosSessionId(posSession.getId());
         this.categoryRepository.deleteByPosSessionId(posSession.getId());
         this.paymentRepository.deleteByPosSessionId(posSession.getId());
-        this.posSessionRepository.delete(posSession);
+        this.posSessionRepository.deleteById(posSession.getId());
     }
 }

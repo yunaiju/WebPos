@@ -3,6 +3,7 @@ package com.pos.webPos.category;
 import com.pos.webPos.DataNotFoundException;
 import com.pos.webPos.product.Product;
 import com.pos.webPos.session.PosSession;
+import com.pos.webPos.session.PosSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,15 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final PosSessionRepository posSessionRepository;
 
     public List<Category> getSessionCategoryList(PosSession posSession) {
-        return this.categoryRepository.findAllByPosSession(posSession);
+        Optional<PosSession> validPosSession = this.posSessionRepository.findBySessionId(posSession.getSessionId());
+        if(validPosSession.isPresent()) {
+            return this.categoryRepository.findAllByPosSession(posSession);
+        } else {
+            throw new DataNotFoundException("session not found");
+        }
     }
 
     public Category getCategory(Integer id) {
@@ -31,7 +38,12 @@ public class CategoryService {
     }
 
     public Category getDefaultCategoryBySession(PosSession posSession) {
-        return this.categoryRepository.findByCategoryNameAndPosSession("기본", posSession);
+        Optional<PosSession> validPosSession = this.posSessionRepository.findBySessionId(posSession.getSessionId());
+        if(validPosSession.isPresent()) {
+            return this.categoryRepository.findByCategoryNameAndPosSession("기본", posSession);
+        } else {
+            throw new DataNotFoundException("session not found");
+        }
     }
 
     public void addCategory(String categoryName, PosSession posSession) {
@@ -43,7 +55,7 @@ public class CategoryService {
     }
 
     public void editCategory(Category category, String categoryName, PosSession posSession) {
-        if(!category.getCategoryName().equals(categoryName)) {
+        if(category.getCategoryName().equals(categoryName)) {
             if(this.categoryRepository.existsByPosSessionAndCategoryName(posSession, categoryName)) {
                 throw new IllegalArgumentException("이미 존재하는 카테고리입니다.");
             }
@@ -53,6 +65,13 @@ public class CategoryService {
     }
 
     public void delete(Category category) {
-        this.categoryRepository.delete(category);
+        if(category.getId() != null) {
+            Optional<Category> validCategory = this.categoryRepository.findById(category.getId());
+            if(validCategory.isPresent()) {
+                this.categoryRepository.delete(category);
+            }
+        } else {
+            throw new DataNotFoundException("category not found");
+        }
     }
 }

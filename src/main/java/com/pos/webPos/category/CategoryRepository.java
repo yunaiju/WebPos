@@ -19,6 +19,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Category findByCategoryNameAndPosSession(String categoryName, PosSession posSession);
 
+    Category findByCategoryName(String categoryName);
+
     @Modifying
     @Query("DELETE FROM Category c WHERE c.posSession.id = :posSessionId")
     void deleteByPosSessionId(@Param("posSessionId") Integer posSessionId);

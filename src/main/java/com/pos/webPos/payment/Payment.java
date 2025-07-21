@@ -21,7 +21,7 @@ public class Payment {
 
     private LocalDateTime paymentTime = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private PosSession posSession;
 
     public Payment(String paymentMethod, Integer amount, PosSession posSession) {
