@@ -17,6 +17,8 @@ public interface ProductRepository extends JpaRepository<Product,Integer> {
 
     List<Product> findByCategoryIdAndPosSession(Integer categoryId, PosSession posSession);
 
+    Product findByProductName(String productName);
+
     @Modifying
     @Query("DELETE FROM Product p WHERE p.posSession.id = :posSessionId")
     void deleteByPosSessionId(@Param("posSessionId") Integer posSessionId);
