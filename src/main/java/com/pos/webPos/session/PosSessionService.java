@@ -44,8 +44,18 @@ public class PosSessionService {
     @Transactional
     public void deletePosSessionWithChildren(PosSession posSession) {
         this.productRepository.deleteByPosSessionId(posSession.getId());
+        System.out.println("product deleted");
         this.categoryRepository.deleteByPosSessionId(posSession.getId());
+        System.out.println("category deleted");
         this.paymentRepository.deleteByPosSessionId(posSession.getId());
+        System.out.println("payment deleted");
         this.posSessionRepository.deleteById(posSession.getId());
+        System.out.println("session deleted");
+
+        try {
+            this.posSessionRepository.findBySessionId(posSession.getSessionId());
+        } catch (Exception e) {
+            throw new RuntimeException("No DELETED");
+        }
     }
 }
