@@ -14,7 +14,7 @@ services:
 
   app:
     image: nyejoo/spring-mariadb-nginx:webpos
-    container_name: webpos-app
+    container_name: app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/webpos
       SPRING_DATASOURCE_USERNAME: root
