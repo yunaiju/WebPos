@@ -1,9 +1,4 @@
-FROM openjdk:22-jdk-slim
-VOLUME /tmp
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-
-# 프로필 활성화
-ENV SPRING_PROFILES_ACTIVE=docker
-
+FROM amazoncorretto:21-alpine
+WORKDIR /app
+COPY build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
