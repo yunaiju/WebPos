@@ -1,3 +1,5 @@
+# WebPos
+
 ### 프로젝트 소개
 #### 개요 
 - 팝업 스토어, 플리마켓, 단기 행사 등 일시적 판매를 목표로 하는 환경에서 굳이 무거운 POS 앱을 구매하여 사용해야 할까 ?
@@ -13,7 +15,18 @@
 - 인터넷만 있으면 어디서든 POS 사용 가능, 별도의 HW, SW 필요 X
 
 ### 기술스택
+- Language : JAVA
+- Framework : SpringBoot3, Spring Web, Spring Data JPA, Spring Validation
+- Template Engine : Thymeleaf, ChatGPT
+- Database : MariaDB, JPA, JPQL
+- Deployment / DevOps : AWS LightSail (Amazon Linux 2023), Ningx, HTTPS (Let’s Encrypt), Custom Domain 연결
+- Security / Session : Spring Session, HTTPS (SSL 인증서)
+- Code Test : Junit5
+- Version Control : Git / GitHub
+
 #### Project Architecture
+<img width="1222" height="723" alt="image" src="https://github.com/user-attachments/assets/56e8d9de-3ad4-4ddf-9ec0-1a30fd97e390" />
+
 ### 주요기능
 #### Session 생성 & 관리
 - 사이트 접속 시 자동으로 고유 sessionId 발급 - 로그인 불필요
