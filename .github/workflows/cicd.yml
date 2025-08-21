@@ -80,5 +80,5 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd /home/ec2-user/webpos
-          docker-compose pull
-          docker-compose up -d
+          docker compose pull
+          docker compose up -d
