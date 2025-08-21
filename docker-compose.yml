@@ -15,7 +15,7 @@ services:
       - db_data_webpos:/var/lib/mysql
 
   app:
-    image: nyejoo/webpos-app:latest
+    image: nyejoo/spring-mariadb-nginx:webpos
     container_name: webpos-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/webpos
