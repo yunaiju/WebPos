@@ -44,7 +44,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
-        source: "docker-compose.yml,default.conf"
+        source: "docker-compose.yml,webpos.conf"
         target: "/home/ec2-user/webpos"
 
     - name: Deploy with Docker Compose
