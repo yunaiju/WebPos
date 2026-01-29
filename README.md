@@ -25,7 +25,7 @@
 - Version Control : Git / GitHub
 - CI/CD : GitHub, GitHub Actions
 
-#### Project Architecture
+### Project Architecture
 <img width="811" height="561" alt="webpos architecture" src="https://github.com/user-attachments/assets/a42ec559-e639-494b-b915-7d90f3c6bd92" />
 
 ### 주요기능
