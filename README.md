@@ -25,8 +25,11 @@
 - Version Control : Git / GitHub
 - CI/CD : GitHub, GitHub Actions
 
+### ERD
+<img width="2127" height="830" alt="webpos erd" src="https://github.com/user-attachments/assets/f716bb8e-2272-4e5d-b7d6-a594b9b8c595" />
+
 ### Project Architecture
-<img width="811" height="561" alt="webpos architecture" src="https://github.com/user-attachments/assets/a42ec559-e639-494b-b915-7d90f3c6bd92" />
+<img width="1112" height="762" alt="stronglog architecture" src="https://github.com/user-attachments/assets/7923ecf1-5b55-4b41-8d37-8179d1173191" />
 
 ### 주요기능
 #### Session 생성 & 관리
