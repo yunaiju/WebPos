@@ -1,4 +1,4 @@
-# WebPos
+# 일회성 POS 사이트 "WebPos"
 
 ### 프로젝트 소개
 #### 개요 
@@ -16,21 +16,23 @@
 
 ### 기술스택
 - Language : JAVA
-- Framework : SpringBoot3, Spring Web, Spring Data JPA, Spring Validation
+- Framework : SpringBoot3, Spring Web, Spring Data JPA, Spring Session, Spring Validation
 - Template Engine : Thymeleaf, ChatGPT
 - Database : MariaDB, JPA, JPQL
-- Deployment / DevOps : AWS LightSail (Amazon Linux 2023), Ningx, HTTPS (Let’s Encrypt), Custom Domain 연결
-- Security / Session : Spring Session, HTTPS (SSL 인증서)
+- Deployment / DevOps : AWS LightSail (Amazon Linux 2023), Docker,  Docker Compose, Nginx
+- HTTPS / SSL : Certbot (Let’s Encrypt)
 - Code Test : Junit5
 - Version Control : Git / GitHub
+- CI/CD : GitHub, GitHub Actions
 
 #### Project Architecture
-<img width="1222" height="723" alt="image" src="https://github.com/user-attachments/assets/56e8d9de-3ad4-4ddf-9ec0-1a30fd97e390" />
+<img width="811" height="561" alt="webpos architecture" src="https://github.com/user-attachments/assets/a42ec559-e639-494b-b915-7d90f3c6bd92" />
 
 ### 주요기능
 #### Session 생성 & 관리
 - 사이트 접속 시 자동으로 고유 sessionId 발급 - 로그인 불필요
-세션 별 데이터 저장 – 모든 데이터가 sessionId 참조
+
+- 세션 별 데이터 저장 – 모든 데이터가 sessionId 참조
 
 #### Session 종료
 - 일회성 POS 시스템의 특성 고려 -> 12시간 timeout 설정 
@@ -40,13 +42,7 @@
 - Session 만료 후 사이트 접속 시 새 Session 자동 발급
 
 #### 카테고리/상품 CRUD
-- 카테고리/상품 조회, 상세조회
-
-- 카테고리/상품 등록
-
-- 카테고리/상품 수정
-
-- 카테고리/상품 삭제
+- 카테고리/상품 조회, 상세조회, 등록, 수정, 삭제
 
 #### 운영
 - 카테고리 별 상품 선택 가능
